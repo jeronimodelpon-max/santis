@@ -6,22 +6,22 @@
 <title>Santis</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg: #0b0b12;
-    --surface: #131320;
-    --surface-2: #1a1a2b;
-    --sidebar-bg: #0e0e17;
-    --border: #26263a;
-    --border-soft: #1e1e30;
-    --accent: #9b8cff;
-    --accent-dim: #6b5ce0;
-    --text-primary: #edecf5;
-    --text-secondary: #9694ab;
-    --text-muted: #67647d;
-    --user-bubble: #1c1c2c;
-    --code-bg: #0e0e18;
+    --bg: #081412;
+    --surface: #0f201c;
+    --surface-2: #163029;
+    --sidebar-bg: #0a1815;
+    --border: #234840;
+    --border-soft: #193a32;
+    --accent: #45e0c2;
+    --accent-dim: #2aab93;
+    --text-primary: #eafaf5;
+    --text-secondary: #93b5ac;
+    --text-muted: #5f8177;
+    --user-bubble: #132821;
+    --code-bg: #0a1815;
   }
   *{ box-sizing: border-box; }
   html, body{
@@ -103,21 +103,22 @@
     gap: 8px;
     width:100%;
     padding: 10px 12px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--text-primary);
+    border-radius: 999px;
+    border: none;
+    background: var(--accent);
+    color: #081412;
     font-family: 'Inter', sans-serif;
     font-size: 13px;
+    font-weight: 600;
     cursor:pointer;
     margin-bottom: 12px;
-    transition: border-color 0.15s ease, background 0.15s ease;
+    transition: background 0.15s ease;
     white-space: nowrap;
     flex-shrink:0;
+    justify-content:center;
   }
   #new-chat:hover{
-    border-color: var(--accent-dim);
-    background: var(--surface-2);
+    background: #6ff0d6;
   }
   #new-chat svg{ flex-shrink:0; }
   .sidebar.collapsed #new-chat{
@@ -138,12 +139,12 @@
   #chat-search{
     width:100%;
     padding: 8px 10px 8px 30px;
-    border-radius: 8px;
+    border-radius: 4px;
     border: 1px solid var(--border);
     background: var(--surface);
     color: var(--text-primary);
-    font-family:'Inter', sans-serif;
-    font-size: 12.5px;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 12px;
     outline:none;
   }
   #chat-search:focus{ border-color: var(--accent-dim); }
@@ -159,19 +160,20 @@
     overflow-y:auto;
     display:flex;
     flex-direction:column;
-    gap: 2px;
+    gap: 1px;
   }
   .sidebar.collapsed .chat-list,
   .sidebar.collapsed .chat-list-label{
     display:none;
   }
   .chat-list-label{
-    font-size: 11px;
+    font-size: 10.5px;
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.1em;
     padding: 6px 10px 8px;
     white-space: nowrap;
+    font-family: 'JetBrains Mono', monospace;
   }
   .chat-item{
     display:flex;
@@ -179,7 +181,8 @@
     justify-content:space-between;
     gap: 6px;
     padding: 9px 10px;
-    border-radius: 8px;
+    border-radius: 0;
+    border-left: 2px solid transparent;
     cursor:pointer;
     font-size: 13px;
     color: var(--text-secondary);
@@ -191,6 +194,7 @@
   .chat-item.active{
     background: var(--surface-2);
     color: var(--text-primary);
+    border-left: 2px solid var(--accent);
   }
   .chat-item .title{
     overflow:hidden;
@@ -248,9 +252,9 @@
     display:flex;
     align-items:center;
     justify-content:space-between;
-    padding: 22px 32px;
-    border-bottom: 1px solid var(--border-soft);
-    background: linear-gradient(180deg, rgba(155,140,255,0.05), transparent);
+    padding: 20px 32px;
+    border-bottom: 2px solid var(--accent);
+    background: var(--surface);
   }
   .brand{
     display:flex;
@@ -259,27 +263,31 @@
     min-width:0;
   }
   .brand h1{
-    font-family: 'Fraunces', serif;
-    font-weight: 500;
-    font-size: 22px;
-    letter-spacing: 0.3px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 19px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     margin: 0;
   }
   .brand .tagline{
-    font-size: 12px;
+    font-size: 11.5px;
     color: var(--text-muted);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    letter-spacing: 0.04em;
     margin-left: 4px;
     white-space:nowrap;
+    font-family: 'JetBrains Mono', monospace;
   }
   .status{
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text-muted);
     display:flex;
     align-items:center;
     gap:6px;
     flex-shrink:0;
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
   .status .dot{
     width:6px; height:6px;
@@ -313,31 +321,30 @@
   .row.user{ justify-content:flex-end; }
   .row.assistant{ justify-content:flex-start; }
   .avatar{
-    width: 28px; height: 28px;
-    border-radius: 50%;
+    width: 26px; height: 26px;
+    border-radius: 7px;
     flex-shrink:0;
     display:flex;
     align-items:center;
     justify-content:center;
-    font-family:'Fraunces', serif;
-    font-size: 13px;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 12px;
     margin-top: 2px;
   }
   .avatar.santis{
-    background: radial-gradient(circle at 30% 30%, #b3a6ff, #6b5ce0);
-    color: #0b0b12;
-    font-weight:600;
+    background: var(--accent);
+    color: #081412;
+    font-weight:700;
   }
   .msg-col{
     display:flex;
     flex-direction:column;
-    max-width: 520px;
+    max-width: 560px;
   }
   .row.user .msg-col{ align-items:flex-end; }
   .row.assistant .msg-col{ align-items:flex-start; }
   .bubble{
-    padding: 12px 16px;
-    border-radius: 14px;
+    padding: 2px 0;
     font-size: 15px;
     line-height: 1.6;
     word-wrap: break-word;
@@ -357,7 +364,7 @@
   .bubble pre{
     background: var(--code-bg);
     border: 1px solid var(--border-soft);
-    border-radius: 8px;
+    border-radius: 4px;
     padding: 10px 12px;
     overflow-x: auto;
     margin: 6px 0 10px;
@@ -370,15 +377,18 @@
   }
   .bubble a{ color: var(--accent); text-decoration: underline; }
   .row.user .bubble{
-    background: var(--user-bubble);
-    border: 1px solid var(--border);
-    border-bottom-right-radius: 4px;
-    color: var(--text-primary);
+    background: var(--accent);
+    color: #081412;
+    padding: 10px 16px;
+    border-radius: 999px;
+    font-weight: 500;
+  }
+  .row.assistant{
+    border-left: 3px solid var(--accent);
+    padding-left: 14px;
   }
   .row.assistant .bubble{
-    background: var(--surface);
-    border: 1px solid var(--border-soft);
-    border-bottom-left-radius: 4px;
+    color: var(--text-primary);
   }
   .row.assistant .bubble.thinking{
     color: var(--text-muted);
@@ -432,23 +442,26 @@
 
   footer{
     flex-shrink:0;
-    padding: 16px 24px 24px;
-    border-top: 1px solid var(--border-soft);
+    padding: 18px 24px 26px;
     background: var(--bg);
   }
   .input-wrap{
-    max-width: 720px;
+    max-width: 680px;
     margin: 0 auto;
     display:flex;
     align-items:flex-end;
     gap: 10px;
-    background: var(--surface);
+    background: var(--surface-2);
     border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 8px 8px 8px 18px;
-    transition: border-color 0.15s ease;
+    border-radius: 999px;
+    padding: 10px 10px 10px 22px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
-  .input-wrap:focus-within{ border-color: var(--accent-dim); }
+  .input-wrap:focus-within{
+    border-color: var(--accent);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.35), 0 0 0 3px rgba(69,224,194,0.15);
+  }
   #input{
     flex:1;
     background: transparent;
@@ -464,11 +477,11 @@
   }
   #input::placeholder{ color: var(--text-muted); }
   #send{
-    width: 36px; height: 36px;
-    border-radius: 10px;
+    width: 38px; height: 38px;
+    border-radius: 50%;
     border: none;
     background: var(--accent);
-    color: #0b0b12;
+    color: #081412;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -476,15 +489,17 @@
     flex-shrink:0;
     transition: transform 0.1s ease, background 0.15s ease;
   }
-  #send:hover{ background: #ab9fff; }
+  #send:hover{ background: #6ff0d6; }
   #send:active{ transform: scale(0.92); }
   #send:disabled{ background: var(--border); cursor: default; }
   .hint{
-    max-width: 720px;
-    margin: 8px auto 0;
-    font-size: 11px;
+    max-width: 680px;
+    margin: 10px auto 0;
+    font-size: 10.5px;
     color: var(--text-muted);
     text-align:center;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.02em;
   }
 
   .bubble.notice{
@@ -533,7 +548,7 @@
     margin: 0 auto 16px;
   }
   .name-modal h2{
-    font-family: 'Fraunces', serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-weight: 500;
     font-size: 22px;
     margin: 0 0 8px;
@@ -571,7 +586,7 @@
     cursor:pointer;
     transition: background 0.15s ease;
   }
-  #name-submit:hover{ background: #ab9fff; }
+  #name-submit:hover{ background: #6ff0d6; }
 
   @media (max-width: 780px){
     .sidebar{
@@ -1021,7 +1036,7 @@ async function send(){
   const thinkingBubble = addRow('assistant', '', true);
 
   try{
-    const response = await fetch("/.netlify/functions/chat-santis", {
+    const response = await fetch("/.netlify/functions/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
