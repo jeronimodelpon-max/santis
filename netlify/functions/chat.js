@@ -1,10 +1,10 @@
-// Este archivo es "el mesero". Corre solo, en el hosting, nunca en el
-// navegador del usuario. Ahora le habla a Gemini (Google), que tiene
-// una capa gratuita, en vez de a Anthropic. Su trabajo sigue siendo el
-// mismo: recibir el mensaje que mandó la página, agregarle la llave
-// secreta, llevárselo a la IA, y traer la respuesta de vuelta.
+// Este archivo es "el mesero" de Santis. Corre solo, en el hosting,
+// nunca en el navegador del usuario. Ahora le habla a Groq (que corre
+// modelos abiertos tipo Llama, gratis y sin tarjeta), en vez de a
+// Gemini, porque Gemini tiene un quilombo de llaves roto en este
+// momento del lado de Google.
 
-const MODEL = "gemini-flash-latest";
+const MODEL = "llama-3.3-70b-versatile";
 
 exports.handler = async function (event) {
   if (event.httpMethod !== "POST") {
@@ -12,43 +12,34 @@ exports.handler = async function (event) {
   }
 
   try {
-    // Esto es lo que la página (jerosis.html) le mandó al mesero:
-    // el historial de la charla y las instrucciones de personalidad.
+    // Esto es lo que la página le mandó al mesero: el historial de
+    // la charla y las instrucciones de personalidad.
     const { messages, system } = JSON.parse(event.body);
 
-    // Gemini espera el historial en un formato un poco distinto al
-    // que usa la página: en vez de "assistant" usa "model". Acá lo
-    // traducimos.
-    const contents = (messages || []).map((m) => ({
-      role: m.role === "assistant" ? "model" : "user",
-      parts: [{ text: m.content }],
-    }));
+    // Groq habla el mismo "idioma" que OpenAI: un array de mensajes
+    // con role/content, donde el system prompt es un mensaje más,
+    // el primero de la lista. Mucho más simple que Gemini acá.
+    const chatMessages = [
+      { role: "system", content: system },
+      ...(messages || []).map((m) => ({ role: m.role, content: m.content })),
+    ];
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
-
-    const response = await fetch(url, {
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-goog-api-key": process.env.GEMINI_API_KEY_SANTIS,
+        Authorization: "Bearer " + process.env.GROQ_API_KEY,
       },
       body: JSON.stringify({
-        system_instruction: { parts: [{ text: system }] },
-        contents: contents,
+        model: MODEL,
+        messages: chatMessages,
       }),
     });
 
     const data = await response.json();
 
-    // Gemini avisa que se acabó la cuota gratis del día con un
-    // error 429 (o el estado "RESOURCE_EXHAUSTED"). Acá lo
-    // detectamos y le avisamos a la página con una señal clara,
-    // para que muestre el cartelito en vez de un error feo.
-    const quotaExceeded =
-      response.status === 429 ||
-      (data.error && data.error.status === "RESOURCE_EXHAUSTED");
-
-    if (quotaExceeded) {
+    // Si se acabó la cuota gratis del día/minuto, Groq devuelve 429.
+    if (response.status === 429) {
       return {
         statusCode: 429,
         body: JSON.stringify({ quotaExceeded: true }),
@@ -59,22 +50,18 @@ exports.handler = async function (event) {
       return {
         statusCode: response.status,
         body: JSON.stringify({
-          error: { message: (data.error && data.error.message) || "Error de Gemini" },
+          error: { message: (data.error && data.error.message) || "Error de Groq" },
         }),
       };
     }
 
     const reply =
-      data.candidates &&
-      data.candidates[0] &&
-      data.candidates[0].content &&
-      data.candidates[0].content.parts &&
-      data.candidates[0].content.parts[0]
-        ? data.candidates[0].content.parts[0].text
+      data.choices && data.choices[0] && data.choices[0].message
+        ? data.choices[0].message.content
         : "";
 
     // Devolvemos la respuesta en el mismo formato que ya entendía la
-    // página, para no tener que tocar mucho más código del lado del chat.
+    // página (el mismo que usa Anthropic), para no tocar el resto del código.
     return {
       statusCode: 200,
       body: JSON.stringify({ content: [{ type: "text", text: reply }] }),
